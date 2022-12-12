@@ -30,7 +30,7 @@ export class NetSignalEvent extends NetSignal {
         this.Event = event
     }    
 
-    Fire(...args: [Player]){
+    Fire(...args: Player[]){
         if(RunService.IsServer()){
             const player = args[0]
             this.Event.FireClient(player, ...args)
