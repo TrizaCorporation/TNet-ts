@@ -1,8 +1,4 @@
-interface Middleware {
-    RequestsPerMinute?: number,
-    Inbound?: object,
-    Outbound?: object
-}
+import { ClientMiddleware } from "./Dependencies/Types";
 
 export default class TNetClient {
     

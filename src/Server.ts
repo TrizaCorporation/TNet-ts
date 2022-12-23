@@ -1,18 +1,15 @@
-interface Middleware {
-    RequestsPerMinute?: number,
-    Inbound?: object,
-    Outbound?: object
-}
+import { NetSignalEvent, NetSignalType } from "./Dependencies/NetSignal"
+import { ServerMiddleware } from "./Dependencies/Types"
 
 export default class TNetServer {
-    RemoteHandlers: Map<number, Callback>
-    Middleware: Middleware
-    constructor(middleware: Middleware){
-        this.RemoteHandlers = new Map()
-        this.Middleware = middleware? middleware : {}
+    RemoteHandlers: Array<NetSignalType>
+    Middleware?: ServerMiddleware
+    constructor(middleware?: ServerMiddleware){
+        this.RemoteHandlers = []
+        this.Middleware = middleware
     }
 
     HandleRemoteEvent(event: RemoteEvent){
-        
+        return new NetSignalEvent(this.Middleware? this.Middleware : {}, event)
     }
 }

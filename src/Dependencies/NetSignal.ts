@@ -1,16 +1,18 @@
 import { RunService } from "@rbxts/services"
 import NetSignalConnection, { NetSignalConnectionType } from "./NetSignalConnection"
+import { ServerMiddleware, ClientMiddleware } from "./Types"
 
-interface Middleware {
-    RequestsPerMinute?: number,
-    Inbound?: object,
-    Outbound?: Record<number, Callback>
+export interface NetSignalType {
+    Middleware?: ServerMiddleware | ClientMiddleware
+    Connections: Array<NetSignalConnectionType>,
+    HandleInboundRequest: Callback,
+    Fire: Callback | void
 }
 
 class NetSignal {
-    Middleware: Middleware
+    Middleware: ServerMiddleware | ClientMiddleware
     Connections: Array<NetSignalConnectionType>
-    constructor(middleware: Middleware){
+    constructor(middleware: ServerMiddleware | ClientMiddleware){
         this.Middleware = middleware? middleware : {}
         this.Connections = []
     }
@@ -32,27 +34,28 @@ class NetSignal {
 
 export class NetSignalEvent extends NetSignal {
     Event: RemoteEvent
-    constructor(middleware: Middleware, event: RemoteEvent){
+    constructor(middleware: ServerMiddleware | ClientMiddleware, event: RemoteEvent){
         assert(event.IsA("RemoteEvent"), "Event must be a RemoteEvent")
         super(middleware)
         this.Event = event
     }    
 
-    Fire(...args: Player[]){
-        if(RunService.IsServer()){
-            const player = args[0]
-            this.Event.FireClient(player, ...args)
-        }else{
-            this.Event.FireServer(...args)
-        }
+    FireClient(Player: Player, ...args: unknown[]){
+        assert(RunService.IsServer(), "FireClient can only be ran on the server.")
+        this.Event.FireClient(Player, ...args)
     }
 
-    FireAllClients(...args: []){
+    FireServer(...args: unknown[]){
+        assert(RunService.IsClient(), "FireServer can only be ran on the client.")
+        this.Event.FireServer(...args)
+    }
+
+    FireAllClients(...args: unknown[]){
         assert(RunService.IsServer(), "FireAllClients can only be ran on the server.")
         this.Event.FireAllClients(...args)
     }
 
-    FireToGroup(group: [Player], ...args: []){
+    FireToGroup(group: Player[], ...args: []){
         assert(RunService.IsServer(), "FireAllClients can only be ran on the server.")
         for (let [_, player] of pairs(group)){
             this.Event.FireClient(player, ...args)
@@ -63,13 +66,14 @@ export class NetSignalEvent extends NetSignal {
 
 export class NetSignalFunction extends NetSignal {
     Event: RemoteFunction
-    constructor(middleware: Middleware, event: RemoteFunction){
-        assert(event.IsA("RemoteFunction"), "Event must be a RemoteEvent")
+    constructor(middleware: ServerMiddleware | ClientMiddleware, event: RemoteFunction){
+        assert(event.IsA("RemoteFunction"), "Event must be a RemoteFunction")
         super(middleware)
         this.Event = event
     }
 
-    Fire(...args: Player[]){
-        
+    InvokeClient(Player: Player, ...args: unknown[]){
+        assert(RunService.IsServer(), "FireClient can only be ran on the server.")
+        return this.Event.InvokeClient(Player, ...args)
     }
 }
