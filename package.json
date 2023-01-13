@@ -1,5 +1,5 @@
 {
-  "name": "@trizacorporation/tnet-ts",
+  "name": "@trizacorporation/tnet",
   "version": "0.1.0",
   "description": "",
   "main": "out/init.lua",
