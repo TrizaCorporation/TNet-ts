@@ -1,9 +1,4 @@
-export interface ClientMiddleware {
-    Inbound?: Array<Callback>,
-    Outbound?: Array<Callback>
-}
-
-export interface ServerMiddleware {
+export interface Middleware {
     RequestsPerMinute?: number,
     Inbound?: Array<Callback>,
     Outbound?: Array<Callback>

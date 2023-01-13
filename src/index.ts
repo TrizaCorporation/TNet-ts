@@ -12,14 +12,10 @@ Programmer(s): CodedJimmy
 
 */
 
-import { RunService } from "@rbxts/services";
 import TNetServer from "./Server"
 import TNetClient from "./Client";
 
-export default function(){
-	if (RunService.IsServer()){
-		return TNetServer
-	}else{
-		return TNetClient
-	}
+export {
+	TNetServer,
+	TNetClient
 }

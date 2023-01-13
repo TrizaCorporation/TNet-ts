@@ -1,6 +1,5 @@
-import { ServerMiddleware, ClientMiddleware } from "./Middleware";
+import { Middleware } from "./Middleware";
 
 export {
-    ServerMiddleware, 
-    ClientMiddleware
+    Middleware, 
 }
