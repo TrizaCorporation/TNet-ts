@@ -19,3 +19,4 @@ export {
 	TNetServer,
 	TNetClient
 }
+export * from "./Dependencies"
